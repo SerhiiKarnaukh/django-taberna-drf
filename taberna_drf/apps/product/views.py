@@ -2,9 +2,10 @@ from django.http import Http404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.db.models import Count
 
 from .models import Product, Category
-from .serializers import ProductSerializer, CategorySerializer
+from .serializers import ProductSerializer, CategorySerializer, AllCategoriesSerializer
 
 
 class LatestProductsList(APIView):
@@ -41,4 +42,13 @@ class CategoryDetail(APIView):
     def get(self, request, category_slug, format=None):
         category = self.get_object(category_slug)
         serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+
+class ProductCategoryView(APIView):
+
+    def get(self, request):
+        categories = Category.objects.annotate(one=Count('products')).filter(
+            one__gt=0)
+        serializer = AllCategoriesSerializer(categories, many=True)
         return Response(serializer.data)
