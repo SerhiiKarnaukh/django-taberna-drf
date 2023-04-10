@@ -44,4 +44,3 @@ class ProductAdminModel(admin.ModelAdmin):
 
 admin.site.register(Category, CategoryAdminModel)
 admin.site.register(Product, ProductAdminModel)
-admin.site.register(ProductGallery)
